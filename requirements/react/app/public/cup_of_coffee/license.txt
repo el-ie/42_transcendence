@@ -1,0 +1,8 @@
+Model Information:
+* title:	Cup of Coffee
+* source:	https://sketchfab.com/3d-models/cup-of-coffee-25e40a02b81247c2a326ad25f1b88d1f
+* author:	gpz3d (https://sketchfab.com/gpz3d)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
