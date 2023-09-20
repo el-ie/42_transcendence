@@ -4,12 +4,14 @@ FROM node:latest
 # Set working directory
 WORKDIR /app
 
-# Update apt-get
-RUN apt-get update -y \
-	&& npm install react-router-dom
+COPY ./tools/launch_script.sh /
+
+RUN chmod +x /launch_script.sh
+
+CMD ["sh", "/launch_script.sh"]
 
 # Start the app
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
 
 # # Debug
 # RUN apt-get install vim -y
