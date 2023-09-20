@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+
+  postgres_service:
+      hostname: postgres
+      image: postgres_image
+      container_name: postgres_container
+      build:
+        context: ./requirements/postgres
+        dockerfile: Dockerfile
+      environment:
+        - POSTGRES_USER=myuser
+        - POSTGRES_PASSWORD=mypassword
+        - POSTGRES_DB=trans-db
+      volumes:
+        - postgres_volume:/var/lib/postgresql
+      networks:
+        - trans_network
+      healthcheck:
+        test: ["CMD-SHELL", pg_isready -d trans-db -U myuser]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+
+  nestjs_service:
+      hostname: nestjs
+      image: nestjs_image
+      container_name: nestjs_container
+      build:
+        context: ./requirements/nestjs
+        dockerfile: Dockerfile
+      environment:
+        - POSTGRES_USER=myuser
+        - POSTGRES_PASSWORD=mypassword
+        - POSTGRES_PORT=5432
+        - POSTGRES_DB=trans-db
+      ports:
+        - '3001:3001'
+        - '5555:5555'
+      volumes:
+        - nest_volume:/app
+      networks:
+        - trans_network
+      depends_on:
+        postgres_service:
+          condition: service_healthy
+
+  react_service:
+      hostname: react
+      build:
+        context: ./requirements/react
+        dockerfile: Dockerfile
+      image: react_image
+      container_name: react_container
+      ports:
+        - '3000:3000'
+      volumes:
+        - react_volume:/app
+      networks:
+        - trans_network
+
+networks:
+  trans_network:
+    driver: bridge
+
+volumes:
+
+  nest_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./requirements/nestjs/app
+      o: bind
+
+  react_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./requirements/react/app
+      o: bind
+
+  # Run non-persistent volume due to lack of sudo privileges
+  postgres_volume:
+
+  # Persistent volume setup for production
+  # postgres_volume:
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   device: ./requirements/postgres/data
+    #   o: bind

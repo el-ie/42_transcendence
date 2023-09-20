@@ -1,0 +1,3 @@
+
+inside container :
+npm install @nestjs/passport passport passport-oauth2

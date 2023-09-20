@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://myuser:mypassword@postgres:5432/trans-db?schema=public"
+  // url      = env("DATABASE_URL")
+}
+
+// // TEST
+// model User {
+//   id    Int     @id @default(autoincrement())
+//   name  String
+//   email String  @unique
+// }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email    String @unique
+  pseudo   String @unique @db.VarChar(50)
+  password String
+
+  auth42Id     Int     @unique
+  refreshToken String  @unique
+  is2faActive  Boolean @default(false)
+  secret2fa    String  @unique @db.VarChar(50)
+
+  // one-to-one relation
+  profile Profile? @relation("Profile")
+
+  // one-to-many relation
+  friends Profile[] @relation("Friends")
+  blocked Profile[] @relation("Blocked")
+
+  playerHome Match[] @relation("PlayerHome")
+  playerAway Match[] @relation("PlayerAway")
+  winner     Match[] @relation("Winner")
+
+  ChannelBan  ChannelBan[]  @relation("BannedUser")
+  ChannelMute ChannelMute[] @relation("MutedUser")
+
+  // many-to-many relation
+  channelAdmins Channel[] @relation("ChannelAdmins")
+  channelUsers  Channel[] @relation("ChannelUsers")
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User @relation("Profile", fields: [userId], references: [id])
+  userId Int  @unique
+
+  avatarUrl String?
+  xp        Float   @default(0.0)
+  friends   User[]  @relation("Friends")
+  blocked   User[]  @relation("Blocked")
+}
+
+model Match {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  playerHome   User  @relation("PlayerHome", fields: [playerHomeId], references: [id])
+  playerHomeId Int
+  playerAway   User  @relation("PlayerAway", fields: [playerAwayId], references: [id])
+  playerAwayId Int
+  winner       User? @relation("Winner", fields: [winnerId], references: [id])
+  winnerId     Int?
+
+  map       String
+  scoreHome Int
+  scoreAway Int
+  endedAt   DateTime
+}
+
+model Channel {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name     String
+  password String?
+  type     ChannelTypes @default(PUBLIC)
+
+  admins User[] @relation("ChannelAdmins")
+  users  User[] @relation("ChannelUsers")
+
+  messages Message[]
+
+  banned ChannelBan[]
+  muted  ChannelMute[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  channel Channel[]
+  content String
+}
+
+model ChannelBan {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  channel Channel[]
+  user    User      @relation("BannedUser", fields: [userId], references: [id])
+  userId  Int       @unique
+
+  banEndsAt DateTime
+}
+
+model ChannelMute {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  channel Channel[]
+  user    User      @relation("MutedUser", fields: [userId], references: [id])
+  userId  Int       @unique
+
+  muteEndsAt DateTime
+}
+
+enum ChannelTypes {
+  PUBLIC
+  PROTECTED
+  PRIVATE
+  DIRECT
+}

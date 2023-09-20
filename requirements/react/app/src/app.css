@@ -1,0 +1,99 @@
+@font-face {
+	font-family: 'logo_font';
+	src: url('../assets/canobis.otf') format('opentype');
+}
+
+/* black background with white text */
+body, html {
+	background-color: #1c1720;
+	color: #d3c4de;
+	font-family: monospace;
+}
+
+
+.container {
+	position:absolute;
+	margin:  0;
+	padding: 0;
+	top:     0;
+	bottom:  0;
+	left:    0;
+	right:   0;
+	width: 100%;
+	height: 100%;
+}
+
+.content {
+	color: #d3c4de;
+}
+
+.canvas {
+	position: absolute;
+}
+
+
+.menu {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	/* center elements */
+	background-color: #38323e;
+	font-size: 1.5em;
+	/* center blocks */
+		justify-content: space-evenly;
+
+
+}
+
+.logo {
+	font-family: 'logo_font';
+	/* padding-left: 1em; */
+	/* padding-right: 1em; */
+	/* padding-top: 0.1em; */
+	/* padding-bottom: 0.1em; */
+	/* center text */
+	text-align: center;
+	/* background image */
+	/* background-image: url('../src/assets/img/visual_01.png'); */
+
+	font-size: 3.5em;
+	color: #b279de;
+
+
+
+}
+
+.menu a {
+
+	padding: 0.5em;
+	/* font */
+	font-family: monospace;
+	/* remove underline */
+	text-decoration: none;
+	/* text color */
+	color: #d3c4de;
+	transition: 0.2s;
+
+		text-align: center; /* Centrer le texte dans chaque élément */
+
+
+	flex-grow: 1; /* Agrandir la zone survolable */
+	/* hack to take all available height */
+	/* padding: 1em; */
+}
+
+.menu a:hover {
+
+	/* animation: color_fade 1.2s; */
+	/* -moz-animation: color_fade 1.2s; */
+	/* -webkit-animation: color_fade 1.2s; */
+	/* -o-animation: color_fade 1.2s; */
+
+	background-color: #4a3e56;
+	/* color: #b279de; */
+	color: #a56fe2;
+	/* font-style: italic; */
+	padding-left: 5em;
+}
+
+
